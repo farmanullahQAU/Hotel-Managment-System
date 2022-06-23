@@ -3,15 +3,18 @@ import 'dart:typed_data';
 
 import 'package:baidarg/components/textfield.dart';
 import 'package:baidarg/constants/text_const.dart';
+import 'package:baidarg/responsive/responsive_wrapper.dart';
 import 'package:baidarg/services/firestore_services.dart';
 import 'package:baidarg/services/pdf_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterfire_ui/firestore.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:typed_data';
 import 'package:get/state_manager.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../models/item_model.dart';
 import 'dart:html'as html;
@@ -49,32 +52,45 @@ class OrderView extends GetView<OrderViewController> {
             
           child: controller.selectedItemList.isEmpty?Container():
                 FloatingActionButton(onPressed: () async {
+
+
           final Order order=controller.createOrder();
+          //first add order to firestore then generate invice
+         await controller.addOrderToFirestore(order);
          uint8list    =   await PdfInvoicesApi.generate(order);
 
 
                   
 
 
-                },child: const Icon(Icons.picture_as_pdf),),
+                },child: Obx(()=>
+                
+                
+                controller.isOrderAdding.isTrue?const Center(child: CircularProgressIndicator(),):
+                 const Icon(Icons.picture_as_pdf)),),
         ),
       ),
             FloatingActionButton(onPressed: (){
 
-    // anchor.click();
       
-      //         Get.defaultDialog(
+              Get.defaultDialog(
                 
-      //           onConfirm: () async {
+                onConfirm: () async {
+
+                  if(controller.formKey.currentState!.validate())
+                  {
+  await controller.addItemToFirestore();
+      Get.back();
+
+                  }
       
-      // await controller.addItemToFirestore();
-      // Get.back();
+    
       
-      //           },
+                },
       
-      //           onCancel: (){},
+                onCancel: (){},
                 
-      //           content: const ItemEntryForm());
+                content: const ItemEntryForm());
             },child: const Icon(Icons.add),),
           ],
         ),
@@ -116,10 +132,11 @@ switchInCurve: Curves.easeIn,
                       
                         padding: EdgeInsets.all(10),
                         
-                        
-                        shrinkWrap: true,
+shrinkWrap: true,                        
                         itemCount: snapshot.docs.length,
                         itemBuilder: (context, index) {
+
+                     
                           // if we reached the end of the currently obtained items, we try to
                           // obtain more items
                           if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
@@ -134,56 +151,55 @@ switchInCurve: Curves.easeIn,
                         
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                
-                              height: 30,width: 50,
-                              child: Obx(()=>
-                               Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                 children: [
-                                
-                                   Text(item.itemName.tr),
-                                   Expanded(
-                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                       children: [
-                                         Checkbox(
+                            child: Obx(()=>
+                             Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                               children: [
+                              
+                                 Text(item.itemName.tr),
+                                 Expanded(
+                                   child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                     children: [
+                                       Checkbox(
+                                          
+                                            checkColor: Colors.white,
+                                            value: controller.items[index].isSelected,
+                                            onChanged: (bool? value) {
+                                              //select/deselect
+                                          item.isSelected=!item.isSelected;
+                                          //update the list
+                                          controller.items[index]=item;
+                                             
+                                          //add to list which only contains selected items
+                                                              controller.addToSelectedItemsList=item;
+                                            },
+                                          ),
+                                          SizedBox(height: 10,),
+                                                              
+                                          Expanded(
+                                            child: TextField(
                                             
-                                              checkColor: Colors.white,
-                                              value: controller.items[index].isSelected,
-                                              onChanged: (bool? value) {
-                                                //select/deselect
-                                            item.isSelected=!item.isSelected;
-                                            //update the list
-                                            controller.items[index]=item;
-                                               
-                                            //add to list which only contains selected items
-                                                                controller.addToSelectedItemsList=item;
-                                              },
-                                            ),
-                                            SizedBox(height: 10,),
-                                                                
-                                            TextField(
                                               // controller: TextEditingController(text: item.selectedQuantity.toString()),
                                               
                                               
                                               decoration: InputDecoration(
-
+                                          
                                                 border: OutlineInputBorder()
                                               ),
                                               
                                               onChanged: (val){
                                             
                                               controller.selectedItemList.toList()[index].selectedQuantity=int.parse(val);
-                                            },)
-                                                                
-                                            
-                                       ],
-                                     ),
+                                            },),
+                                          )
+                                                              
+                                          
+                                     ],
                                    ),
-                                 ],
-                               ),
-                              ),
+                                 ),
+                               ],
+                             ),
                             ),
                           );
                         }, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 10),
@@ -197,7 +213,7 @@ switchInCurve: Curves.easeIn,
               ),
               Container(
                 
-                color: Colors.red,
+                // color: Colors.red,
                 height: 400,width: double.infinity,),
             ],
           ),
@@ -249,25 +265,69 @@ class ItemEntryForm extends GetView<OrderViewController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return SizedBox(
+      width: !ResponsiveWidget.isLargeScreen(context)?context.width*0.8:context.width*0.4,
       
-      children: [
+      
+      child: Form(
 
-        TxtField(
-          controller:controller.itemName ,
-          hintTxt:itemName.tr,),
-        const SizedBox(height: 20,),
-        TxtField(
-          controller: controller.itemPrice,
-          hintTxt:itemPrice.tr,),
-        const SizedBox(height: 20,),
-        TxtField(
-          controller: controller.itemCategory,
-          hintTxt:itemCategory.tr,),
+        key: controller.formKey,
+        child: Column(
+          
+          children: [
+          
+            TxtField(
+              validator: (value)=>value==null||value==""?"required":null,
 
 
+            lblTxt: itemName.tr,
 
-      ],
+              
+              controller:controller.itemName ,
+
+            
+              hintTxt:itemName.tr,),
+            const SizedBox(height: 20,),
+            TxtField(
+
+                       validator: (value)=>value==null||value==""?"required":null,
+
+              lblTxt: itemPrice.tr,
+              inputFormatters: 
+              
+      [ FilteringTextInputFormatter.allow(RegExp("[0-9.]")),],
+              
+              
+              textInputType: TextInputType.number,
+              controller: controller.itemPrice,
+              hintTxt:itemPrice.tr,),
+            const SizedBox(height: 20,),
+            TxtField(
+                     validator: (value)=>value==null||value==""?"required":null,
+
+
+              lblTxt:itemCategory.tr,
+              controller: controller.itemCategory,
+              hintTxt:itemCategory.tr,),
+
+
+            const SizedBox(height: 20,),
+
+            TxtField(
+
+            lblTxt: itemQuantity.tr,
+
+              
+              controller:controller.quantityController ,
+
+            
+              hintTxt:itemQuantity.tr,),
+          
+          
+          
+          ],
+        ),
+      ),
     );
   }
 }

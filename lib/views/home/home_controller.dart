@@ -1,5 +1,6 @@
 import 'package:baidarg/login/login_view.dart';
 import 'package:baidarg/views/home/order/order_view.dart';
+import 'package:baidarg/views/stock/stock_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,9 @@ class HomeController extends GetxController{
 
 LoginView(),
 
-  OrderView()
+  OrderView(),
+  StockView()
+
 
   ].obs;
 

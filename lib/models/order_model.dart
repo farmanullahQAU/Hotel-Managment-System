@@ -19,7 +19,7 @@ class Order {
          Map<String, dynamic> toMap() {
 
     return {
-    FirestoreConstants.orderItems:items,
+    FirestoreConstants.orderItems:items.map((item) => item.toMap()).toList(),
     FirestoreConstants.orderTtype:orderType,
     FirestoreConstants.totalCost:totalCost,
  
@@ -37,10 +37,20 @@ class Order {
 
 
   orderType=data[FirestoreConstants.orderTtype];
+ 
+  items=<Item>[];
 
-items=data[FirestoreConstants.orderItems];
+      data[FirestoreConstants.orderItems].forEach((item) {
+        items.add(Item.fromMap(item ));
+      });
+
+      
+    
+
 
   totalCost=data[FirestoreConstants.totalCost];
+
+
 
   }
 

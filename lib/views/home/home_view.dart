@@ -157,15 +157,17 @@ Positioned(
         
         
         NavigationRailDestination(
-              icon: const CircleAvatar(
+              icon:  CircleAvatar(
                 backgroundColor: Colors.transparent,
-                child: Icon(Icons.home),
+                child:e.icon,
               ),
+
+              
               selectedIcon: CircleAvatar(
                 backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.home),
+                child:e.icon,
               ),
-              label: Container()),
+              label:e.widget??Container()),
         
         ).toList()
       ),

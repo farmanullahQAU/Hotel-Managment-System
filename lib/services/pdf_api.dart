@@ -65,6 +65,9 @@ buildTotal(order.items.length,order.totalCost,order.orderType)
 
       Text('invoice',style:TextStyle(font: font,fontSize:15)),
 
+  SizedBox(width:50),
+  Text(ServiceProvider().formatDateTime(DateTime.now())),
+
       SizedBox(height: 0.9*PdfPageFormat.cm)
     
     ]);
@@ -149,15 +152,7 @@ Row(
   Text(totalItems.toString())
 ]),
 SizedBox(height: 10),
-Row(
-  
-  children: [
 
-  Text("Date Generated"),
-  SizedBox(width:50),
-  Text(ServiceProvider().formatDateTime(DateTime.now()))
-
-]),
 Row(
   
   children: [

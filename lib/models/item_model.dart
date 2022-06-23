@@ -8,12 +8,14 @@ class Item {
    int? selectedQuantity=1;
    late final double price;
    late final String category;
+   late final int? stockQuantity;
 
   
   Item(
       { required this.itemName,
       
       required this.price,
+    this.stockQuantity,
       required this.category,
       this.selectedQuantity
       
@@ -25,6 +27,8 @@ class Item {
     FirestoreConstants.category:category,
     FirestoreConstants.price:price,
     FirestoreConstants.itemName:itemName,
+    FirestoreConstants.stockQuantity:stockQuantity,
+
  
 
 
@@ -33,7 +37,7 @@ class Item {
 
     };
   }
-   Item.fromMap( Map<String, dynamic>  data,id) {
+   Item.fromMap( Map<String, dynamic>  data,{String? id}) {
 
      
 
@@ -42,6 +46,8 @@ class Item {
   category=data[FirestoreConstants.category];
 
   price=data[FirestoreConstants.price];
+  stockQuantity=data[FirestoreConstants.stockQuantity];
+
 
   itemName=data[FirestoreConstants.itemName];
 

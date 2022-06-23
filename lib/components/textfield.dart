@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../textstyles.dart';
 
@@ -13,13 +15,20 @@ class TxtField extends StatelessWidget {
   final Color? fillColor;
   final String? hintTxt;
   final bool? ispassword;
+  final List<TextInputFormatter>? inputFormatters;
+
+  final Function? validator;
   final bool? isunique;
   final int? maxLines;
+ final  TextInputType? textInputType;
 
   final TextEditingController controller;
 
  const TxtField(
       {Key? key,
+      this.validator,
+      this.textInputType,
+      this.inputFormatters,
       this.lblTxt,
       this.onChanged,
       this.maxLines,
@@ -35,9 +44,20 @@ class TxtField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      
+  keyboardType: textInputType,
       maxLines: maxLines,
+inputFormatters: inputFormatters,
 
-      validator: (val) => val == "" ? "*required" : null,
+      validator: (val) => 
+      
+          validator!=null?
+      
+      validator!(val):null,
+      
+      
+      
+      // val == "" ? "*required".tr : null,
 
       onChanged: (value) =>
           onChanged != null ? onChanged!(value) : null,
@@ -53,6 +73,7 @@ class TxtField extends StatelessWidget {
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         hintText: hintTxt,
+        labelText: lblTxt,
 
           fillColor: fillColor,
           

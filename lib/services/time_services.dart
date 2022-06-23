@@ -5,6 +5,6 @@ class ServiceProvider{
 
 String formatDateTime(DateTime dateTime){
 
-  return DateFormat.MEd().format(dateTime);
+  return DateFormat.yMMMEd().format(dateTime);
 }
 }

@@ -40,7 +40,8 @@ class MenuController extends GetxService {
   List<NavBar> get getNavigationItem=> 
      [
       NavBar(
-        widget: const Text("HOME"),
+        icon: Icon(Icons.home),
+        widget:  Text("HOME".tr),
         onTap: () async {
           //  Scrollable.ensureVisible(
           //           homeGlobalKey.currentContext!,
@@ -63,6 +64,7 @@ class MenuController extends GetxService {
         routeName: RouteNames.HOME,
       ),
       NavBar(
+        icon: Icon(Icons.restaurant),
         onTap: () async {
           // scrollController.animateTo(scrollController.position.maxScrollExtent, duration: Duration(milliseconds: 1000), curve: Curves.ease
           // );
@@ -78,14 +80,26 @@ class MenuController extends GetxService {
 
           // await savCurrentIndex(RouteNames.ABOUT, 1);
 
-          Get.offNamed(RouteNames.ABOUT);
+          // Get.offNamed(RouteNames.ABOUT);
           currentIdex = 1;
         },
          routeName: RouteNames.HOME,
-        widget: const Text("ABOUT ME"),
+        widget:  Text("ORDER".tr),
         index: 1,
       ),
-  
+    NavBar(
+      icon: Icon(Icons.data_array),
+        onTap: () async {
+        
+
+
+
+          currentIdex = 2;
+        },
+         routeName: RouteNames.STOCK,
+        widget:  Text("STOCK".tr),
+        index: 1,
+      ),
     ].obs;
   
 
