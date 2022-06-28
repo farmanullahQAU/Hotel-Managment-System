@@ -4,6 +4,7 @@ import '../constants/firestore_constants.dart';
 
 class Item {
    late final String itemName;
+   late final String itemId;
    bool isSelected=false;
    int? selectedQuantity=1;
    late final double price;
@@ -28,6 +29,8 @@ class Item {
     FirestoreConstants.price:price,
     FirestoreConstants.itemName:itemName,
     FirestoreConstants.stockQuantity:stockQuantity,
+    
+    FirestoreConstants.itemId:itemId
 
  
 
@@ -37,11 +40,10 @@ class Item {
 
     };
   }
-   Item.fromMap( Map<String, dynamic>  data,{String? id}) {
-
-     
-
-
+   Item.fromMap( Map<String, dynamic>  data) {
+print("itemidiididdididi");
+print(data["item_id"]);
+     itemId=data[FirestoreConstants.itemId];
 
   category=data[FirestoreConstants.category];
 

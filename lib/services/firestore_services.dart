@@ -8,16 +8,58 @@ import '../models/order_model.dart';
 
 class FirestoreServices{
 
-static Future<void> addItem(Item item){
+// static Future<void> addItem(Item item){
 
 
 
 
- return  FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc(item.itemName.toLowerCase()).set(item.toMap());
+//  return  FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc(item.itemName.toLowerCase()).set(item.toMap());
+// }
+
+static Future<void> addItem(Item item)async{
+
+
+
+
+ DocumentReference documentReference=  FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc();
+ //set item id
+ item.itemId=documentReference.id;
+
+ return documentReference.set(item.toMap());
 }
 
 
+
 static Future addOrderToDB(Order order)async{
+
+
+order.items.forEach((element) { 
+
+if(
+
+element.stockQuantity!=null
+
+){
+
+if(
+
+  element.selectedQuantity!=null
+
+){
+
+  int newStockQuanity=element.stockQuantity!-element.selectedQuantity!;
+
+FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc(element.itemId).update({
+
+FirestoreConstants.stockQuantity:newStockQuanity
+
+});
+
+}
+
+}
+
+});
  return  await FirebaseFirestore.instance.collection(FirestoreConstants.orderCollectionName).add(order.toMap());
 
   
@@ -26,7 +68,7 @@ static Future addOrderToDB(Order order)async{
 static final itemQuery = FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName)
   // .orderBy(FirestoreConstants.dateFinished, descending: true)
   .withConverter<Item>(
-     fromFirestore: (snapshot, _) => Item.fromMap(snapshot.data()!,id:snapshot.id),
+     fromFirestore: (snapshot, _) => Item.fromMap(snapshot.data()!),
      toFirestore: (item, _) => item.toMap(),
    );
 

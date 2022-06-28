@@ -4,6 +4,8 @@ class FirestoreConstants {
 
  static const  category="category";
   static String itemName="item_name";
+  static String itemId="item_id";
+
   static String price="price";
   static String stockQuantity="stock_quantity";
 

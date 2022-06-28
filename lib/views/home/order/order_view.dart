@@ -97,6 +97,10 @@ class OrderView extends GetView<OrderViewController> {
       body: FirestoreQueryBuilder<Item>(
       query: FirestoreServices.itemQuery,
       builder: (context, snapshot, _) {
+
+
+
+        print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
     
       return SizedBox(
 
@@ -180,15 +184,19 @@ shrinkWrap: true,
                                           Expanded(
                                             child: TextField(
                                             
+                                            
                                               // controller: TextEditingController(text: item.selectedQuantity.toString()),
                                               
                                               
                                               decoration: InputDecoration(
                                           
+                                          
+                                          labelText: "Quantity".tr,
                                                 border: OutlineInputBorder()
                                               ),
                                               
                                               onChanged: (val){
+                                                //if users enter quantity the set field for item
                                             
                                               controller.selectedItemList.toList()[index].selectedQuantity=int.parse(val);
                                             },),
@@ -290,7 +298,9 @@ class ItemEntryForm extends GetView<OrderViewController> {
             const SizedBox(height: 20,),
             TxtField(
 
-                       validator: (value)=>value==null||value==""?"required":null,
+                       validator: (value)=>value==null||value==""?"required":
+                       
+                       null,
 
               lblTxt: itemPrice.tr,
               inputFormatters: 

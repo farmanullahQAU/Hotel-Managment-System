@@ -1,4 +1,6 @@
 
+import 'package:baidarg/constants/text_const.dart';
+
 import '../constants/firestore_constants.dart';
 import 'item_model.dart';
 
@@ -6,6 +8,7 @@ class Order {
    late  List<Item> items;
    late double totalCost;
    late final String orderType;
+   late final String orderId;
 
   
   Order(
@@ -30,10 +33,10 @@ class Order {
 
     };
   }
-   Order.fromMap( Map<String, dynamic>  data,id) {
+   Order.fromMap( Map<String, dynamic>  data,String id) {
 
      
-
+orderId=id;
 
 
   orderType=data[FirestoreConstants.orderTtype];

@@ -62,7 +62,7 @@ _selectedItemList=<Item>{}.obs;
   }
 
   Future<void> addItemToFirestore() async {
-    final item= Item(category: itemCategory.text,itemName: itemName.text,price: double.parse(itemPrice.text));
+    final item= Item(category: itemCategory.text,itemName: itemName.text,price: double.parse(itemPrice.text),stockQuantity: int.parse(quantityController.text));
     await FirestoreServices.addItem(item);
 
 
