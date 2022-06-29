@@ -79,6 +79,8 @@ Future addOrderToFirestore(Order order)
 async {
   isOrderAdding.value=true;
 try{
+unSelectSelected();
+
 await FirestoreServices.addOrderToDB(order);
 
 
@@ -90,6 +92,17 @@ isOrderAdding.value=false;
 
 isOrderAdding.value=false;
 }
+
+  void unSelectSelected() {
+
+    for (int index=0;index<items.length;index++) { 
+
+      final item=items.toList()[index];
+      item.isSelected=false;
+items[index]=item;
+      
+    }
+  }
 
 
 

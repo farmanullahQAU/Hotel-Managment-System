@@ -7,8 +7,7 @@ class AppTheme {
 
 
   static final primaryLight = ThemeData(
-    
-
+    scaffoldBackgroundColor: Colors.grey,
     inputDecorationTheme:  InputDecorationTheme(
 
       // enabledBorder: OutlineInputBorder(),
@@ -18,7 +17,7 @@ class AppTheme {
       
       borderRadius: BorderRadius.circular(20)),
       
-      errorStyle: TextStyle(color: Colors.grey),
+      errorStyle: TextStyle(color: Color.fromARGB(255, 167, 159, 159)),
       
       prefixIconColor:Colors.grey),
 textTheme: GoogleFonts.openSansTextTheme(

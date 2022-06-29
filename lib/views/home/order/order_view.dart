@@ -23,8 +23,7 @@ import '../../../models/order_model.dart';
 import 'order_view_controller.dart';
 
 class OrderView extends GetView<OrderViewController> {
-   Uint8List? uint8list;
-   OrderView({Key? key}) : super(key: key);
+    OrderView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,35 +40,7 @@ class OrderView extends GetView<OrderViewController> {
           children: [
 
       
-            //if no item is selected the don't show the pdf button else show
-      Obx(()=>
-        AnimatedSwitcher(
-
-             duration: const Duration(milliseconds: 500),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return ScaleTransition(scale: animation, child: child);
-            },
-            
-          child: controller.selectedItemList.isEmpty?Container():
-                FloatingActionButton(onPressed: () async {
-
-
-          final Order order=controller.createOrder();
-          //first add order to firestore then generate invice
-         await controller.addOrderToFirestore(order);
-         uint8list    =   await PdfInvoicesApi.generate(order);
-
-
-                  
-
-
-                },child: Obx(()=>
-                
-                
-                controller.isOrderAdding.isTrue?const Center(child: CircularProgressIndicator(),):
-                 const Icon(Icons.picture_as_pdf)),),
-        ),
-      ),
+      
             FloatingActionButton(onPressed: (){
 
       
@@ -132,88 +103,13 @@ switchInCurve: Curves.easeIn,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GridView.builder(
-                      
-                        padding: EdgeInsets.all(10),
-                        
-shrinkWrap: true,                        
-                        itemCount: snapshot.docs.length,
-                        itemBuilder: (context, index) {
-
-                     
-                          // if we reached the end of the currently obtained items, we try to
-                          // obtain more items
-                          if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
-                            // Tell FirestoreQueryBuilder to try to obtain more items.
-                            // It is safe to call this function from within the build method.
-                            snapshot.fetchMore();
-                          }
-                        
-                          final item = snapshot.docs[index].data();
-                      controller.addToList=item;
-                        
-                        
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Obx(()=>
-                             Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                               children: [
-                              
-                                 Text(item.itemName.tr),
-                                 Expanded(
-                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                     children: [
-                                       Checkbox(
-                                          
-                                            checkColor: Colors.white,
-                                            value: controller.items[index].isSelected,
-                                            onChanged: (bool? value) {
-                                              //select/deselect
-                                          item.isSelected=!item.isSelected;
-                                          //update the list
-                                          controller.items[index]=item;
-                                             
-                                          //add to list which only contains selected items
-                                                              controller.addToSelectedItemsList=item;
-                                            },
-                                          ),
-                                          SizedBox(height: 10,),
-                                                              
-                                          Expanded(
-                                            child: TextField(
-                                            
-                                            
-                                              // controller: TextEditingController(text: item.selectedQuantity.toString()),
-                                              
-                                              
-                                              decoration: InputDecoration(
-                                          
-                                          
-                                          labelText: "Quantity".tr,
-                                                border: OutlineInputBorder()
-                                              ),
-                                              
-                                              onChanged: (val){
-                                                //if users enter quantity the set field for item
-                                            
-                                              controller.selectedItemList.toList()[index].selectedQuantity=int.parse(val);
-                                            },),
-                                          )
-                                                              
-                                          
-                                     ],
-                                   ),
-                                 ),
-                               ],
-                             ),
-                            ),
-                          );
-                        }, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 10),
-                      ),
+                     ResponsiveWidget.isLargeScreen(context)?
+                     _addItemsGridView(snapshot,4):_addItemsGridView(snapshot,2),
                   
-                  Text("kkk")
+                        //if no item is selected the don't show the pdf button else show
+       _addInvoiceButton(),
+
+      SizedBox(height: 20,)
                   
                     ],
                   ),
@@ -232,6 +128,129 @@ shrinkWrap: true,
     );
   }
 
+  Widget _addInvoiceButton()  {
+    return Obx(()=>
+      AnimatedSwitcher(
+
+           duration: const Duration(milliseconds: 500),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          
+        child: controller.selectedItemList.isEmpty?Container():
+              SizedBox(
+
+                height: 60,
+                child: ElevatedButton.icon(onPressed: () async {
+              
+              
+                        final Order order=controller.createOrder();
+                        //first add order to firestore then generate invice
+                       await controller.addOrderToFirestore(order);
+                       await PdfInvoicesApi.generate(order);
+              
+              
+                  
+              
+              
+                },icon: Obx(()=>
+                
+                
+                controller.isOrderAdding.isTrue?const Center(child: CircularProgressIndicator(),):
+                 const Icon(Icons.picture_as_pdf)), label: Text("Generate Invoice"),),
+              ),
+      ),
+    );
+  }
+
+  GridView _addItemsGridView(FirestoreQueryBuilderSnapshot<Item> snapshot,int crossAxisCount) {
+    return GridView.builder(
+                    
+                      padding: EdgeInsets.all(10),
+                      
+shrinkWrap: true,                        
+                      itemCount: snapshot.docs.length,
+                      itemBuilder: (context, index) {
+
+                   
+                        // if we reached the end of the currently obtained items, we try to
+                        // obtain more items
+                        if (snapshot.hasMore && index + 1 == snapshot.docs.length) {
+                          // Tell FirestoreQueryBuilder to try to obtain more items.
+                          // It is safe to call this function from within the build method.
+                          snapshot.fetchMore();
+                        }
+                      
+                        final item = snapshot.docs[index].data();
+                    controller.addToList=item;
+                      
+                      
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Obx(()=>
+                           Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                             children: [
+                            
+                               Text(item.itemName.tr),
+                               Expanded(
+                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                   children: [
+                                     Checkbox(
+                                        
+                                          checkColor: Colors.white,
+                                          value: controller.items[index].isSelected,
+                                          onChanged: (bool? value) {
+                                            //select/deselect
+                                        item.isSelected=!item.isSelected;
+                                        //update the list
+                                        controller.items[index]=item;
+                                           
+                                        //add to list which only contains selected items
+                                                            controller.addToSelectedItemsList=item;
+                                          },
+                                        ),
+                                        SizedBox(height: 10,),
+                                     item.stockQuantity!=null?   Text(item.stockQuantity.toString()):Text(""),
+                                                            
+                                        Expanded(
+                                          child: TextField(
+                                          
+                                          
+                                            // controller: TextEditingController(text: item.selectedQuantity.toString()),
+                                            
+                                            
+                                            decoration: InputDecoration(
+                                        
+                                        
+                                        labelText: "Quantity".tr,
+                                              border: OutlineInputBorder()
+                                            ),
+                                            
+                                            onChanged: (val){
+                                              //if users enter quantity then set field for item
+                                      item.selectedQuantity=int.parse(val);
+                                           controller.addToSelectedItemsList=item;
+                                           
+                                          },),
+                                        )
+                                                            
+                                        
+                                   ],
+                                 ),
+                               ),
+                             ],
+                           ),
+                          ),
+                        );
+                      }, gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                        
+                        
+                        crossAxisCount: crossAxisCount),
+                    );
+  }
+
   
 }
 class RadioButtons extends GetView<OrderViewController> {
@@ -240,13 +259,13 @@ class RadioButtons extends GetView<OrderViewController> {
   @override
   Widget build(BuildContext context) {
     return Obx(()=>
-       Column(
+       Row(
          crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-      for (int i = 0; i < 2; i++)
-        SizedBox(
-          width: 300,
-          height: 50,
+         mainAxisAlignment: MainAxisAlignment.center,
+           children: <Widget>[
+            Spacer(),
+           for (int i = 0; i < 2; i++)
+        Expanded(
           child: ListTile(
             title: Text(
             i==0?order.tr:parsal.tr,
@@ -262,8 +281,10 @@ class RadioButtons extends GetView<OrderViewController> {
             ),
           ),
         ),
-      ],
-    ),
+            Spacer(),
+
+           ],
+         ),
     );
   }
 }

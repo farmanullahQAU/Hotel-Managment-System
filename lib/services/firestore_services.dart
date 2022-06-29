@@ -1,7 +1,9 @@
 
 
 import 'package:baidarg/models/item_model.dart';
+import 'package:baidarg/views/home/order/order_view_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 import '../constants/firestore_constants.dart';
 import '../models/order_model.dart';
@@ -33,7 +35,7 @@ static Future<void> addItem(Item item)async{
 static Future addOrderToDB(Order order)async{
 
 
-order.items.forEach((element) { 
+for (var element in order.items) { 
 
 if(
 
@@ -43,11 +45,16 @@ element.stockQuantity!=null
 
 if(
 
-  element.selectedQuantity!=null
+  element.selectedQuantity!=null&&(element.stockQuantity!>element.selectedQuantity!)
 
 ){
 
   int newStockQuanity=element.stockQuantity!-element.selectedQuantity!;
+print("selected qty: ${element.selectedQuantity} ");
+  
+print("old stock: ${element.stockQuantity} ");
+
+print("new stock: $newStockQuanity ");
 
 FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc(element.itemId).update({
 
@@ -55,11 +62,12 @@ FirestoreConstants.stockQuantity:newStockQuanity
 
 });
 
-}
+
+ }
 
 }
 
-});
+}
  return  await FirebaseFirestore.instance.collection(FirestoreConstants.orderCollectionName).add(order.toMap());
 
   

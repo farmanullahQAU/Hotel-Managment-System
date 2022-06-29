@@ -84,7 +84,7 @@ class MenuController extends GetxService {
           currentIdex = 1;
         },
          routeName: RouteNames.HOME,
-        widget:  Text("ORDER".tr),
+        widget:  Text("MENUE".tr),
         index: 1,
       ),
     NavBar(
@@ -95,6 +95,20 @@ class MenuController extends GetxService {
 
 
           currentIdex = 2;
+        },
+         routeName: RouteNames.STOCK,
+        widget:  Text("ORDERS".tr),
+        index: 1,
+      ),
+
+        NavBar(
+      icon: Icon(Icons.storage),
+        onTap: () async {
+        
+
+
+
+          currentIdex = 3;
         },
          routeName: RouteNames.STOCK,
         widget:  Text("STOCK".tr),

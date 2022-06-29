@@ -38,7 +38,7 @@ Flexible(child: Obx(()=> controller.screens.elementAt(controller.currentIndex)))
 
       smallScreen: Stack(children: [
 
-Center(child: Container(width: double.infinity,height: Get.height,color: Colors.pink,)),
+Flexible(child: Obx(()=> controller.screens.elementAt(controller.currentIndex))),
         
 
 Positioned(
