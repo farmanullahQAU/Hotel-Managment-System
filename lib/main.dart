@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
     //  darkTheme: ThemeData.dark(),
 //we need some custom changes in default dark theme so we use AppTheme.darkTheme
     darkTheme: ThemeData.dark(),
-theme: AppTheme.primaryLight,
         title:"Baidar G",
         initialBinding: Binder(),
 

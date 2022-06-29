@@ -45,7 +45,7 @@ element.stockQuantity!=null
 
 if(
 
-  element.selectedQuantity!=null&&(element.stockQuantity!>element.selectedQuantity!)
+  element.selectedQuantity!=null&&(element.stockQuantity!>=element.selectedQuantity!)
 
 ){
 
@@ -87,7 +87,11 @@ static final itemQuery = FirebaseFirestore.instance.collection(FirestoreConstant
      toFirestore: (order, _) => order.toMap(),
    );
 
-  
+  static Future updateItem(Item item)async{
+
+    
+    return await FirebaseFirestore.instance.collection(FirestoreConstants.itemCollectionName).doc(item.itemId).update(item.toMap());
+  }
 
   }
   

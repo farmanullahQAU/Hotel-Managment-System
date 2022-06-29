@@ -1,6 +1,7 @@
 import 'package:baidarg/login/login_view.dart';
 import 'package:baidarg/views/home/order/order_view.dart';
 import 'package:baidarg/views/orders/orders.dart';
+import 'package:baidarg/views/settings/settings_view.dart';
 import 'package:baidarg/views/stock/stock_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,8 @@ LoginView(),
 
    OrderView(),
   StockView(),
-  const ItemsStock()
+  const ItemsStock(),
+   SettingsView()
 
 
 

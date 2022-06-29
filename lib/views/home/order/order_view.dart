@@ -41,27 +41,10 @@ class OrderView extends GetView<OrderViewController> {
 
       
       
-            FloatingActionButton(onPressed: (){
+            FloatingActionButton(onPressed: ()async{
 
       
-              Get.defaultDialog(
-                
-                onConfirm: () async {
-
-                  if(controller.formKey.currentState!.validate())
-                  {
-  await controller.addItemToFirestore();
-      Get.back();
-
-                  }
-      
-    
-      
-                },
-      
-                onCancel: (){},
-                
-                content: const ItemEntryForm());
+              await showntryForm();
             },child: const Icon(Icons.add),),
           ],
         ),
@@ -104,7 +87,7 @@ switchInCurve: Curves.easeIn,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                      ResponsiveWidget.isLargeScreen(context)?
-                     _addItemsGridView(snapshot,4):_addItemsGridView(snapshot,2),
+                     _addItemsGridView(snapshot,10):_addItemsGridView(snapshot,2),
                   
                         //if no item is selected the don't show the pdf button else show
        _addInvoiceButton(),
@@ -126,6 +109,29 @@ switchInCurve: Curves.easeIn,
       },
     ),
     );
+  }
+
+  Future showntryForm({bool? isupdate, String? itemId}) async {
+   return await Get.defaultDialog(
+              
+              onConfirm: () async {
+
+                if(controller.formKey.currentState!.validate())
+                {
+                  isupdate==true?
+                  await controller.updateItem(itemId!):
+await controller.addItemToFirestore();
+    Get.back();
+
+                }
+    
+  
+    
+              },
+    
+              onCancel: (){},
+              
+              content: const ItemEntryForm());
   }
 
   Widget _addInvoiceButton()  {
@@ -186,13 +192,20 @@ shrinkWrap: true,
                       
                       
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Obx(()=>
                            Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                              children: [
                             
-                               Text(item.itemName.tr),
+                               CircleAvatar(
+                                backgroundColor: Theme.of(context).backgroundColor,
+                                radius: 53,
+                                 child: CircleAvatar(
+                                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                  radius: 50,
+                                  child: Text(item.itemName.tr)),
+                               ),
                                Expanded(
                                  child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -212,10 +225,20 @@ shrinkWrap: true,
                                           },
                                         ),
                                         SizedBox(height: 10,),
+                                         Align(alignment: Alignment.topLeft,child: IconButton(
+                                          onPressed: () async {
+controller.fillFields(item);
+              await showntryForm(isupdate: true,itemId: item.itemId);
+                                            
+                                          },
+                                          icon: Icon(Icons.edit)),),
                                      item.stockQuantity!=null?   Text(item.stockQuantity.toString()):Text(""),
                                                             
                                         Expanded(
                                           child: TextField(
+                                               inputFormatters: 
+              
+      [ FilteringTextInputFormatter.allow(RegExp("[0-9.]")),],
                                           
                                           
                                             // controller: TextEditingController(text: item.selectedQuantity.toString()),
@@ -234,7 +257,8 @@ shrinkWrap: true,
                                            controller.addToSelectedItemsList=item;
                                            
                                           },),
-                                        )
+                                        ),
+                                       
                                                             
                                         
                                    ],
@@ -245,8 +269,8 @@ shrinkWrap: true,
                           ),
                         );
                       }, gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                        
-                        
+                        childAspectRatio: (1 / 2),
+                      mainAxisSpacing: 10,
                         crossAxisCount: crossAxisCount),
                     );
   }

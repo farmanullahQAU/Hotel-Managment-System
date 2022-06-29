@@ -114,6 +114,19 @@ class MenuController extends GetxService {
         widget:  Text("STOCK".tr),
         index: 1,
       ),
+        NavBar(
+      icon: Icon(Icons.settings),
+        onTap: () async {
+        
+
+
+
+          currentIdex = 4;
+        },
+         routeName: RouteNames.STOCK,
+        widget:  Text("Settings".tr),
+        index: 1,
+      ),
     ].obs;
   
 
@@ -126,11 +139,7 @@ class MenuController extends GetxService {
 
 
   GlobalKey<ScaffoldState> get homeScaffoldKey => _homeScaffoldKey;
-  GlobalKey<ScaffoldState> get projectsViewKey => _projectsViewKey;
 
-
-  GlobalKey<ScaffoldState> get aboutScaffoldKey => _aboutScaffoldKey;
-  GlobalKey<ScaffoldState> get contactScaffoldKey => _contactScaffoldKey;
 
 
   void controlHomeMenu() {
@@ -139,22 +148,8 @@ class MenuController extends GetxService {
     }
   }
 
-  void controlAboutMenu() {
-    if (!aboutScaffoldKey.currentState!.isDrawerOpen) {
-      aboutScaffoldKey.currentState!.openDrawer();
-    }
-  }
-  void controlContactMenu() {
-    if (!contactScaffoldKey.currentState!.isDrawerOpen) {
-      contactScaffoldKey.currentState!.openDrawer();
-    }
-  }
-  
-    void controlProjectsMenu() {
-    if (!projectsViewKey.currentState!.isDrawerOpen) {
-      projectsViewKey.currentState!.openDrawer();
-    }
-  }
+ 
+
   
 
 

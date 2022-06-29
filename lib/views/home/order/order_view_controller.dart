@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:baidarg/constants/text_const.dart';
 import 'package:baidarg/models/order_model.dart';
 import 'package:baidarg/services/firestore_services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -102,10 +103,33 @@ isOrderAdding.value=false;
 items[index]=item;
       
     }
+    selectedItemList.clear();
   }
 
 
+fillFields(Item item){
+
+  itemName.text=item.itemName;
+  itemCategory.text=item.category;
+  itemPrice.text=item.price.toString();
+  quantityController.text=item.stockQuantity.toString();
+
+}
+updateItem(String id)async{
+    Item itm= Item(
+      
+      
+      
+      category: itemCategory.text,itemName: itemName.text,
+      
+      
+      
+      price: double.parse(itemPrice.text),stockQuantity: int.parse(quantityController.text));
+      itm.itemId=id;
+
+     await FirestoreServices.updateItem(itm);
 
 
+}
 
 }
